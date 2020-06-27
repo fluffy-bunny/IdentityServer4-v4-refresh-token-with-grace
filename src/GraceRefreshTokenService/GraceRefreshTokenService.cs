@@ -182,6 +182,11 @@ namespace IdentityServer4.Services
         public override async Task<TokenValidationResult> ValidateRefreshTokenAsync(
             string tokenHandle, Client client)
         {
+            //////////////////////////////////////////////////
+            // Calling the base ValidateRefreshTokenAsync
+            // this covers the obvious failures like Lifetime checks.
+            //////////////////////////////////////////////////
+
             var baseResult = await base.ValidateRefreshTokenAsync(tokenHandle, client);
             if (baseResult.IsError)
             {

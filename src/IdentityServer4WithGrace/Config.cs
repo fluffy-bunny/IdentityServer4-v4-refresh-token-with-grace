@@ -50,6 +50,7 @@ namespace IdentityServer
                         "roles",
                         "api1", "api2", "api4.with.roles"
                     },
+                    AbsoluteRefreshTokenLifetime = 3600,
                     RefreshTokenGraceEnabled = true,
                     RefreshTokenGraceMaxAttempts = 10,
                     RefreshTokenGraceTTL = 300
