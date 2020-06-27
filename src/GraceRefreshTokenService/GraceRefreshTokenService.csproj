@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>IdentityServer4.Services</RootNamespace>
+  </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="IdentityServer4" Version="4.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\BackgroundServices\BackgroundServices.csproj" />
+      <ProjectReference Include="..\ClientStore\ClientStore.csproj" />
+    </ItemGroup>
+</Project>
