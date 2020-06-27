@@ -17,17 +17,13 @@ namespace IdentityServer4.Services
  
     public class GraceRefreshTokenService : DefaultRefreshTokenService
     {
-        private IBackgroundTaskQueue<DeleteRefreshTokenQueueItems> _taskQueue;
-
         public GraceRefreshTokenService(
             IRefreshTokenStore refreshTokenStore,
-            IBackgroundTaskQueue<DeleteRefreshTokenQueueItems> deleteRefreshTokenTaskQueue,
             IProfileService profile, 
             ISystemClock clock, 
             ILogger<DefaultRefreshTokenService> logger) : 
             base(refreshTokenStore, profile, clock, logger)
         {
-            _taskQueue = deleteRefreshTokenTaskQueue;
         }
         public override async Task<string> CreateRefreshTokenAsync(
             ClaimsPrincipal subject, Token accessToken, Client client)
@@ -88,8 +84,10 @@ namespace IdentityServer4.Services
                 // flag as consumed
                 if (!refreshTokenExtra.ConsumedTime.HasValue)
                 {
+                    // only track the initial consumed time.
                     refreshTokenExtra.ConsumedTime = Clock.UtcNow.DateTime;
                 }
+                // increment the attempts used
                 refreshTokenExtra.ConsumedAttempts += 1;
                 if (!clientExtra.IsRefreshGraceEnabled())
                 {
@@ -127,14 +125,18 @@ namespace IdentityServer4.Services
 
             if (needsCreate)
             {
+                var oldChild = refreshTokenExtra.RefeshTokenChild;
+                var oldParent = refreshTokenExtra.RefeshTokenParent;
                 var savedConsumedTime = refreshTokenExtra.ConsumedTime;
+
                 // set it to null so that we save non-consumed token
                 refreshTokenExtra.ConsumedTime = null;
-                var oldChild = refreshTokenExtra.RefeshTokenChild;
                 refreshTokenExtra.RefeshTokenChild = null;
-                var oldParent = refreshTokenExtra.RefeshTokenParent;
-                refreshTokenExtra.RefeshTokenParent = handle;
+                // carry forward the parent.
+                refreshTokenExtra.RefeshTokenParent = handle; 
+
                 var newHandle = await RefreshTokenStore.StoreRefreshTokenAsync(refreshTokenExtra);
+
                 refreshTokenExtra.ConsumedTime = savedConsumedTime;
                 refreshTokenExtra.RefeshTokenParent = null;
                 if (client.RefreshTokenUsage == TokenUsage.OneTimeOnly)
@@ -144,33 +146,24 @@ namespace IdentityServer4.Services
                     {
                         refreshTokenExtra.RefeshTokenChild = newHandle;
                     }
+                    
                     await RefreshTokenStore.UpdateRefreshTokenAsync(
                            handle,
                            refreshTokenExtra);
-                    if (!string.IsNullOrWhiteSpace(oldChild))
-                    {
-                        _taskQueue.QueueBackgroundWorkItem(
-                            x =>
-                            {
-                                return RefreshTokenStore.RemoveRefreshTokenAsync(oldChild);
-                            }
-                            );
-                    }
-                    if (!string.IsNullOrWhiteSpace(oldParent))
-                    {
-                        _taskQueue.QueueBackgroundWorkItem(
-                            x =>
-                            {
-                                return RefreshTokenStore.RemoveRefreshTokenAsync(oldParent);
-                            }
-                            );
-                    }
-                    
 
-                    //         await RefreshTokenStore.RemoveRefreshTokenAsync(oldChild);
+                    if (clientExtra.IsRefreshGraceEnabled())
+                    {
+                        if (!string.IsNullOrWhiteSpace(oldChild))
+                        {
+                            await RefreshTokenStore.RemoveRefreshTokenAsync(oldChild);
+                        }
+                        if (!string.IsNullOrWhiteSpace(oldParent))
+                        {
+                            await RefreshTokenStore.RemoveRefreshTokenAsync(oldParent);
+                        }
+                    }
                 }
                 handle = newHandle;
-
                 Logger.LogDebug("Created refresh token in store");
             }
             else if (needsUpdate)
@@ -192,12 +185,7 @@ namespace IdentityServer4.Services
             var baseResult = await base.ValidateRefreshTokenAsync(tokenHandle, client);
             if (baseResult.IsError)
             {
-                _taskQueue.QueueBackgroundWorkItem(
-                               x =>
-                               {
-                                   return RefreshTokenStore.RemoveRefreshTokenAsync(tokenHandle);
-                               }
-                               );
+                await RefreshTokenStore.RemoveRefreshTokenAsync(tokenHandle);
                 return baseResult;
             }
             var invalidGrant = new TokenValidationResult
@@ -213,13 +201,7 @@ namespace IdentityServer4.Services
                 if ((await AcceptConsumedTokenAsync(baseResult.RefreshToken, client)) == false)
                 {
                     Logger.LogWarning("Rejecting refresh token because it has been consumed already.");
-                    _taskQueue.QueueBackgroundWorkItem(
-                            x =>
-                            {
-                                return RefreshTokenStore.RemoveRefreshTokenAsync(tokenHandle);
-                            }
-                            );
-
+                    await RefreshTokenStore.RemoveRefreshTokenAsync(tokenHandle);
                     return invalidGrant;
                 }
             }
@@ -227,7 +209,7 @@ namespace IdentityServer4.Services
             return baseResult;
 
         }
-
+        
         protected override Task<bool> AcceptConsumedTokenAsync(RefreshToken refreshToken)
         {
             // we will reject this later in the flow
@@ -268,9 +250,6 @@ namespace IdentityServer4.Services
                 
                 return Task.FromResult(true);
             }
-           
         }
-
-        
     }
 }

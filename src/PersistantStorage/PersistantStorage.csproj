@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BackgroundServices\BackgroundServices.csproj" />
     <ProjectReference Include="..\GraceRefreshTokenService\GraceRefreshTokenService.csproj" />
   </ItemGroup>
 

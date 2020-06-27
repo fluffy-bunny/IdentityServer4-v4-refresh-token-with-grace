@@ -1,4 +1,3 @@
-using IdentityServer4.Stores;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,16 +9,13 @@ namespace IdentityServer4.Services
     public class QueuedHostedService<T>  : BackgroundService where T: class
     {
         private readonly IBackgroundTaskQueue<T> _taskQueue;
-        private readonly IRefreshTokenStore _refreshTokenStore;
         private readonly ILogger _logger;
 
         public QueuedHostedService (
-            IBackgroundTaskQueue<T> deleteRefreshTokenTaskQueue,
-            IRefreshTokenStore refreshTokenStore,
+            IBackgroundTaskQueue<T> taskQueue,
             ILogger<QueuedHostedService<T>> logger)
         {
-            _taskQueue = deleteRefreshTokenTaskQueue;
-            _refreshTokenStore = refreshTokenStore;
+            _taskQueue = taskQueue;
             _logger = logger;
         }
 

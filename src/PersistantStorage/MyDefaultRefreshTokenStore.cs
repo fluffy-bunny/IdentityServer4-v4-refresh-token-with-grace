@@ -10,8 +10,11 @@ using System.Threading.Tasks;
 
 namespace PersistantStorage
 {
-    public class MyDefaultRefreshTokenStore : DefaultGrantStore<RefreshTokenExtra>, IRefreshTokenStore
+    public class MyDefaultRefreshTokenStore : 
+        DefaultGrantStore<RefreshTokenExtra>, IRefreshTokenStore
     {
+        private IBackgroundTaskQueue<DeleteRefreshTokenQueueItems> _taskQueue;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultRefreshTokenStore"/> class.
         /// </summary>
@@ -23,9 +26,11 @@ namespace PersistantStorage
             IPersistedGrantStore store,
             IPersistentGrantSerializer serializer,
             IHandleGenerationService handleGenerationService,
+            IBackgroundTaskQueue<DeleteRefreshTokenQueueItems> taskQueue,
             ILogger<DefaultRefreshTokenStore> logger)
             : base(IdentityServerConstants.PersistedGrantTypes.RefreshToken, store, serializer, handleGenerationService, logger)
         {
+            _taskQueue = taskQueue;
         }
 
         /// <summary>
@@ -66,7 +71,8 @@ namespace PersistantStorage
         /// <returns></returns>
         public Task RemoveRefreshTokenAsync(string refreshTokenHandle)
         {
-            return RemoveItemAsync(refreshTokenHandle);
+            DeferRemoveItemAsync(refreshTokenHandle);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -85,6 +91,13 @@ namespace PersistantStorage
             ori = ori.Replace('/', '_');
             ori = ori.Replace('-', '+');
             return ori;
+        }
+        private void DeferRemoveItemAsync(string refresh_token)
+        {
+            _taskQueue.QueueBackgroundWorkItem(x =>
+            {
+                return RemoveItemAsync(refresh_token);
+            });
         }
     }
 }
