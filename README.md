@@ -8,7 +8,7 @@ From the clients perspective, they can redeem the old refresh_token only 10 time
 Since this is in place to account for clients not getting a response to a refresh_token request, any attempt to redeem a child refresh_token is **PROOF** that a delivery was made.  This triggers the backend to remove the parent of that child.  
 
 
-## Usage
+## Running the Demo
 
 ```
 cd IdentityServer4WithGrace
@@ -22,6 +22,58 @@ dotnet run
 cd ConsoleResourceOwnerFlowRefreshToken
 dotnet run
 ```
+
+## Implementation
+
+### Adding the feature to IdentityServer  
+[IdentityServer4WithGrace Configuration](./src/IdentityServer4WithGrace/Startup.cs)  
+The following;  
+```
+   services.AddMyDefaultRefreshTokenStore();
+   services.AddBackgroundServices();
+   services.AddGraceRefreshTokenService();
+```
+is added **BEFORE** this;
+```
+ var builder = services.AddIdentityServer()
+                .AddInMemoryIdentityResources(Config.IdentityResources)
+                .AddInMemoryApiScopes(Config.ApiScopes)
+                .AddInMemoryClients(Config.Clients)
+                .AddTestUsers(TestUsers.Users);
+```
+If you add your replacement services, IdentityServer will honor that.  
+
+[ClientExtra configuration](./src/IdentityServer4WithGrace/Config.cs)  
+```
+new ClientExtra
+{
+    ClientId = "roclient",
+    ClientSecrets =
+    {
+        new Secret("secret".Sha256())
+    },
+
+    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+
+    AllowOfflineAccess = true,
+    AllowedScopes =
+    {
+        IdentityServerConstants.StandardScopes.OpenId,
+        IdentityServerConstants.StandardScopes.Email,
+        IdentityServerConstants.StandardScopes.Address,
+        "roles",
+        "api1", "api2", "api4.with.roles"
+    },
+    RefreshTokenGraceEnabled = true,
+    RefreshTokenGraceMaxAttempts = 10,
+    RefreshTokenGraceTTL = 300,
+    RequireRefreshClientSecret = false // meant for insecure clients.
+}
+
+```
+
+
+### Feature Details
 
 Most of this code is from the IdentityServer quickstart projects.
 
