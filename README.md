@@ -45,29 +45,35 @@ If you add your replacement services, IdentityServer will honor that.
 
 [ClientExtra configuration](./src/IdentityServer4WithGrace/Config.cs)  
 ```
+ 
+///////////////////////////////////////////
+// Console Resource Owner Flow Sample
+//////////////////////////////////////////
 new ClientExtra
 {
-    ClientId = "roclient",
-    ClientSecrets =
-    {
-        new Secret("secret".Sha256())
-    },
+  ClientId = "roclient",
+  ClientSecrets =
+  {
+      new Secret("secret".Sha256())
+  },
 
-    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+  AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
-    AllowOfflineAccess = true,
-    AllowedScopes =
-    {
-        IdentityServerConstants.StandardScopes.OpenId,
-        IdentityServerConstants.StandardScopes.Email,
-        IdentityServerConstants.StandardScopes.Address,
-        "roles",
-        "api1", "api2", "api4.with.roles"
-    },
-    RefreshTokenGraceEnabled = true,
-    RefreshTokenGraceMaxAttempts = 10,
-    RefreshTokenGraceTTL = 300
+  AllowOfflineAccess = true,
+  AllowedScopes =
+  {
+      IdentityServerConstants.StandardScopes.OpenId,
+      IdentityServerConstants.StandardScopes.Email,
+      IdentityServerConstants.StandardScopes.Address,
+      "roles",
+      "api1", "api2", "api4.with.roles"
+  },
+  AbsoluteRefreshTokenLifetime = 3600,
+  RefreshTokenGraceEnabled = true,
+  RefreshTokenGraceMaxAttempts = 10,
+  RefreshTokenGraceTTL = 300
 }
+ 
 
 ```
 
