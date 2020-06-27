@@ -235,7 +235,8 @@ namespace IdentityServer4.Services
                 /////////////////////////////////////////////
                 // check if grace refresh token has expired
                 /////////////////////////////////////////////
-                if (refreshTokenExtra.CreationTime.HasExceeded(
+                var consumedTime = (DateTime)refreshTokenExtra.ConsumedTime;
+                if (consumedTime.HasExceeded(
                     (int)clientExtra.RefreshTokenGraceTTL
                     , Clock.UtcNow.DateTime))
                 {
