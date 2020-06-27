@@ -19,9 +19,16 @@ namespace IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            /******************************************
+             * refresh_token grace feature begin
+             * ****************************************/
             services.AddMyDefaultRefreshTokenStore();
             services.AddBackgroundServices();
             services.AddGraceRefreshTokenService();
+            /******************************************
+             * refresh_token grace feature end
+             * ****************************************/
 
             var builder = services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.IdentityResources)
