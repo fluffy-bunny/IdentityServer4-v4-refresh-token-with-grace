@@ -1,4 +1,3 @@
-using ClientStore.Extensions;
 using ClientStore.Models;
 using IdentityModel;
 using IdentityServer4.Models;
@@ -89,7 +88,7 @@ namespace IdentityServer4.Services
                 }
                 // increment the attempts used
                 refreshTokenExtra.ConsumedAttempts += 1;
-                if (!clientExtra.IsRefreshGraceEnabled())
+                if (!clientExtra.RefreshTokenGraceEnabled)
                 {
                     await RefreshTokenStore.UpdateRefreshTokenAsync(handle, refreshTokenExtra);
                 }
@@ -142,7 +141,7 @@ namespace IdentityServer4.Services
                 if (client.RefreshTokenUsage == TokenUsage.OneTimeOnly)
                 {
                     Logger.LogDebug("Token usage is one-time only. Setting current handle as consumed, and generating new handle");
-                    if (clientExtra.IsRefreshGraceEnabled())
+                    if (clientExtra.RefreshTokenGraceEnabled)
                     {
                         refreshTokenExtra.RefeshTokenChild = newHandle;
                     }
@@ -151,7 +150,7 @@ namespace IdentityServer4.Services
                            handle,
                            refreshTokenExtra);
 
-                    if (clientExtra.IsRefreshGraceEnabled())
+                    if (clientExtra.RefreshTokenGraceEnabled)
                     {
                         if (!string.IsNullOrWhiteSpace(oldChild))
                         {
@@ -226,7 +225,7 @@ namespace IdentityServer4.Services
             var refreshTokenExtra = refreshToken as RefreshTokenExtra;
             var clientExtra = client as ClientExtra;
 
-            if (!clientExtra.IsRefreshGraceEnabled())
+            if (!clientExtra.RefreshTokenGraceEnabled)
             {
                 if(client.RefreshTokenUsage == TokenUsage.OneTimeOnly && refreshToken.ConsumedTime.HasValue)
                 {
@@ -242,7 +241,7 @@ namespace IdentityServer4.Services
                 /////////////////////////////////////////////
                 var consumedTime = (DateTime)refreshTokenExtra.ConsumedTime;
                 if (consumedTime.HasExceeded(
-                    (int)clientExtra.RefreshTokenGraceTTL
+                      clientExtra.RefreshTokenGraceTTL
                     , Clock.UtcNow.DateTime))
                 {
                     Logger.LogWarning("Refresh token has expired.");

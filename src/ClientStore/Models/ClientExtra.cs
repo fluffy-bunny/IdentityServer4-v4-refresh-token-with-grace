@@ -16,10 +16,36 @@ namespace ClientStore.Models
         {
             return (ClientExtra) MemberwiseClone();
         }
-        
-        public bool? RefreshTokenGraceEnabled { get; set; }
-        public int? RefreshTokenGraceTTL { get; set; }
-        public int? RefreshTokenGraceMaxAttempts { get; set; }
+        private bool? _refreshTokenGraceEnabled;
+        public bool RefreshTokenGraceEnabled
+        {
+            get
+            {
+                if (_refreshTokenGraceEnabled == null) return false;
+                return (bool)_refreshTokenGraceEnabled;
+            }
+            set { _refreshTokenGraceEnabled = value; }
+        }
+        private int? _refreshTokenGraceTTL;
+        public int RefreshTokenGraceTTL
+        {
+            get
+            {
+                if (_refreshTokenGraceTTL == null) return 0;
+                return (int)_refreshTokenGraceTTL;
+            }
+            set { _refreshTokenGraceTTL = value; }
+        }
+        private int? _refreshTokenGraceMaxAttempts;
+        public int RefreshTokenGraceMaxAttempts
+        {
+            get
+            {
+                if (_refreshTokenGraceMaxAttempts == null) return 0;
+                return (int)_refreshTokenGraceMaxAttempts;
+            }
+            set { _refreshTokenGraceMaxAttempts = value; }
+        }
 
     }
 }
