@@ -111,7 +111,7 @@ The rules are as follows;
 
 3. A child_refresh_token records its parent_refresh_token  
 
-4. A child_refresh_token, when it becomes a parent, removes its parent.  This is to prevent the case when the old parent comes in it doesn't exist anymore, and hence cannot remove this newly upgraded parent_refresh_token.  If we get a child_refresh_token we have proof that we delivered that child_refresh_token, hence the parent of that child is no longer needed.  
+4. A child_refresh_token, when it becomes a parent, removes its parent.  This is to prevent the case when the old parent comes in it doesn't exist anymore, and hence cannot remove this newly upgraded parent_refresh_token.  If we get a child_refresh_token we have **PROOF** that we delivered that child_refresh_token, hence the parent of that child is no longer needed.  
 
 
 5. A parent_refresh_token has a MAX consumed attempts that it can have.  Once exceeded, the parent is removed.  
