@@ -71,7 +71,9 @@ new ClientExtra
   AbsoluteRefreshTokenLifetime = 3600,
   RefreshTokenGraceEnabled = true,
   RefreshTokenGraceMaxAttempts = 10,
-  RefreshTokenGraceTTL = 300
+  RefreshTokenGraceTTL = 300,
+
+  RequireRefreshClientSecret = false
 }
  
 
@@ -89,10 +91,12 @@ var clientExtra = client as ClientExtra;
 ```
 
 ```
-public bool? RefreshTokenGraceEnabled { get; set; }
-public int? RefreshTokenGraceTTL { get; set; }
-public int? RefreshTokenGraceMaxAttempts { get; set; }
+bool RefreshTokenGraceEnabled 
+int RefreshTokenGraceTTL 
+int RefreshTokenGraceMaxAttempts 
+bool RequireRefreshClientSecret
 ```  
+
 [RefreshTokenExtra](./src/GraceRefreshTokenService/Models/RefreshTokenExtra.cs)  
 I needed more data to be written to persistant storage when tracking refresh_tokens.   
 ```
@@ -129,6 +133,40 @@ public int? RefreshTokenGraceMaxAttempts { get; set; }
 public int? RefreshTokenGraceTTL { get; set; }
 ```
 
+
+# RequireRefreshClientSecret feature
+
+This isn't related to the refresh_token grace feature, but the problem typically arises when you have mobile apps with fragile internet connections.  
+In this case the **NOT TRUSTED** clients are given a refresh_token that doesn't require a client_secret.
+
+**NOTE**: Nothing in the OAuth2 spec calls out that a client_secret is **REQUIRED** to refresh a token.  Anyway, my call to deviate even if it was :)  
+
+
+### Adding the feature to IdentityServer  
+[IdentityServer4WithGrace Configuration](./src/IdentityServer4WithGrace/Startup.cs)  
+The following;  
+```
+//////////////////////////////////////////////
+// IdentityServer sometimes doesn't do a TryAddTransient
+// so we have to replace the services with a remove then add.
+//////////////////////////////////////////////
+// replace IdentityServer's IClientSecretValidator with mine.
+// note: This isn't needed for the refesh_token grace stuff
+//       This is to allow a refresh_token to be redeemed without a client_secret
+services.ReplaceClientSecretValidator<MyClientSecretValidator>();
+```
+is added **AFTER** this;
+```
+ var builder = services.AddIdentityServer()
+                .AddInMemoryIdentityResources(Config.IdentityResources)
+                .AddInMemoryApiScopes(Config.ApiScopes)
+                .AddInMemoryClients(Config.Clients)
+                .AddTestUsers(TestUsers.Users);
+```
+In this case IdentityServer **DOES NOT** honor adding my IClientSecretValidator upfront.
+
+### Feature Details  
+[MyClientSecretValidator](./src/MyValidators/MyClientSecretValidator.cs)    
 
 
 
