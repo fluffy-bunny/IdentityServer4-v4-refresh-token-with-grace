@@ -155,6 +155,9 @@ The following;
 //       This is to allow a refresh_token to be redeemed without a client_secret
 services.ReplaceClientSecretValidator<MyClientSecretValidator>();
 ```
+[ReplaceClientSecretValidator](./src/MyValidators/Extensions/DependencyInjectionExtensions.cs)   
+
+
 is added **AFTER** this;
 ```
  var builder = services.AddIdentityServer()
