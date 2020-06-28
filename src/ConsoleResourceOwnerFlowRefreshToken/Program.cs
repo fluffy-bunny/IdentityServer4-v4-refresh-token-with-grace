@@ -134,7 +134,7 @@ namespace ConsoleResourceOwnerFlowRefreshToken
                 Address = disco.TokenEndpoint,
 
                 ClientId = "roclient",
-                ClientSecret = "secret",
+                ClientSecret = "secret-bad",
                 RefreshToken = refreshToken
             });
 

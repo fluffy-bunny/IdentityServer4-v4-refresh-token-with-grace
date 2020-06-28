@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersistantStorage", "Persis
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{C0D0ED67-0D5A-4CB0-9C83-3C183B53C865}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyValidators", "MyValidators\MyValidators.csproj", "{6BCD49FB-073A-483E-9474-0DF52B9684B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,18 @@ Global
 		{C0D0ED67-0D5A-4CB0-9C83-3C183B53C865}.Release|x64.Build.0 = Release|Any CPU
 		{C0D0ED67-0D5A-4CB0-9C83-3C183B53C865}.Release|x86.ActiveCfg = Release|Any CPU
 		{C0D0ED67-0D5A-4CB0-9C83-3C183B53C865}.Release|x86.Build.0 = Release|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Debug|x64.Build.0 = Debug|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Debug|x86.Build.0 = Debug|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Release|x64.ActiveCfg = Release|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Release|x64.Build.0 = Release|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Release|x86.ActiveCfg = Release|Any CPU
+		{6BCD49FB-073A-483E-9474-0DF52B9684B8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

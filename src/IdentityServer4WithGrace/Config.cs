@@ -53,7 +53,9 @@ namespace IdentityServer
                     AbsoluteRefreshTokenLifetime = 3600,
                     RefreshTokenGraceEnabled = true,
                     RefreshTokenGraceMaxAttempts = 10,
-                    RefreshTokenGraceTTL = 300
+                    RefreshTokenGraceTTL = 300,
+
+                    RequireRefreshClientSecret = false
                 }
             };
     }

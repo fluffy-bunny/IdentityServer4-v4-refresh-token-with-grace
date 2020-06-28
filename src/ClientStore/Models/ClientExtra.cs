@@ -21,8 +21,7 @@ namespace ClientStore.Models
         {
             get
             {
-                if (_refreshTokenGraceEnabled == null) return false;
-                return (bool)_refreshTokenGraceEnabled;
+                return _refreshTokenGraceEnabled == null ? false : (bool)_refreshTokenGraceEnabled;
             }
             set { _refreshTokenGraceEnabled = value; }
         }
@@ -31,8 +30,7 @@ namespace ClientStore.Models
         {
             get
             {
-                if (_refreshTokenGraceTTL == null) return 0;
-                return (int)_refreshTokenGraceTTL;
+                return _refreshTokenGraceTTL == null ? 0 : (int)_refreshTokenGraceTTL;
             }
             set { _refreshTokenGraceTTL = value; }
         }
@@ -41,10 +39,19 @@ namespace ClientStore.Models
         {
             get
             {
-                if (_refreshTokenGraceMaxAttempts == null) return 0;
-                return (int)_refreshTokenGraceMaxAttempts;
+                return _refreshTokenGraceMaxAttempts == null ? 0 : (int)_refreshTokenGraceMaxAttempts;
             }
             set { _refreshTokenGraceMaxAttempts = value; }
+        }
+
+        private bool? _requireRefreshClientSecret;
+        public bool RequireRefreshClientSecret
+        {
+            get
+            {
+                return _requireRefreshClientSecret == null ? true : (bool)_requireRefreshClientSecret;
+            }
+            set { _requireRefreshClientSecret = value; }
         }
 
     }

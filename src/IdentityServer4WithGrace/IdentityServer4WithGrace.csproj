@@ -144,6 +144,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClientStore\ClientStore.csproj" />
+    <ProjectReference Include="..\MyValidators\MyValidators.csproj" />
     <ProjectReference Include="..\PersistantStorage\PersistantStorage.csproj" />
   </ItemGroup>
 

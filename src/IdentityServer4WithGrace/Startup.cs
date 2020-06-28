@@ -3,6 +3,7 @@
 
 
 using IdentityServer4;
+using IdentityServer4.Services;
 using IdentityServer4.Services.Extensions;
 using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
@@ -20,15 +21,15 @@ namespace IdentityServer
         {
             services.AddControllersWithViews();
 
-            /******************************************
-             * refresh_token grace feature begin
-             * ****************************************/
+            //////////////////////////////////////////////
+            // refresh_token grace feature begin
+            //////////////////////////////////////////////
             services.AddMyDefaultRefreshTokenStore();
             services.AddBackgroundServices();
             services.AddGraceRefreshTokenService();
-            /******************************************
-             * refresh_token grace feature end
-             * ****************************************/
+            //////////////////////////////////////////////
+            // refresh_token grace feature end
+            //////////////////////////////////////////////
 
             var builder = services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.IdentityResources)
@@ -57,6 +58,16 @@ namespace IdentityServer
                         RoleClaimType = "role"
                     };
                 });
+
+
+            //////////////////////////////////////////////
+            // IdentityServer sometimes doesn't do a TryAddTransient
+            // so we have to replace the services with a remove then add.
+            //////////////////////////////////////////////
+            // replace IdentityServer's IClientSecretValidator with mine.
+            // note: This isn't needed for the refesh_token grace stuff
+            //       This is to allow a refresh_token to be redeemed without a client_secret
+            services.ReplaceClientSecretValidator<MyClientSecretValidator>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
