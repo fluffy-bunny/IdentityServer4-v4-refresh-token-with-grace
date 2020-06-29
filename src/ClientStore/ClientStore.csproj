@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="IdentityServer4" Version="4.0.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IdentityServer4.Alt\IdentityServer4.Alt.csproj" />
+  </ItemGroup>
+
 </Project>

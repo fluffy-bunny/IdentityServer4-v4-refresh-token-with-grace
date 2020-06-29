@@ -138,14 +138,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityServer4" Version="4.0.0" />
+ 
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IdentityServer4.Alt\IdentityServer4.Alt.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ClientStore\ClientStore.csproj" />
     <ProjectReference Include="..\MyValidators\MyValidators.csproj" />
     <ProjectReference Include="..\PersistantStorage\PersistantStorage.csproj" />
+    <ProjectReference Include="..\ScopedServices\ScopedServices.csproj" />
   </ItemGroup>
 
 </Project>

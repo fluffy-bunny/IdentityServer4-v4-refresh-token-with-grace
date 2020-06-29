@@ -24,6 +24,8 @@ namespace IdentityServer
             {
                 new ApiScope("api1", "My API")
             };
+        public static ICollection<string> ResourceOwnerPassword2 =>
+           new[] { GrantType.ResourceOwnerPassword, "arbitrary_resource_owner" };
 
         public static IEnumerable<Client> Clients =>
             new List<Client>
@@ -39,7 +41,7 @@ namespace IdentityServer
                         new Secret("secret".Sha256())
                     },
 
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowedGrantTypes = ResourceOwnerPassword2,
 
                     AllowOfflineAccess = true,
                     AllowedScopes =

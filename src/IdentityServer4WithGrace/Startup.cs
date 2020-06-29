@@ -5,10 +5,12 @@
 using IdentityServer4;
 using IdentityServer4.Services;
 using IdentityServer4.Services.Extensions;
+using IdentityServer4.Validation;
 using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using PersistantStorage.Extensions;
@@ -20,6 +22,7 @@ namespace IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddScopedServices();
 
             //////////////////////////////////////////////
             // refresh_token grace feature begin
@@ -30,34 +33,16 @@ namespace IdentityServer
             //////////////////////////////////////////////
             // refresh_token grace feature end
             //////////////////////////////////////////////
+            services.AddTransient<IResourceValidator, MyDefaultResourceValidator>();
+            services.AddClaimsService<MyDefaultClaimsService>();
 
             var builder = services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.IdentityResources)
                 .AddInMemoryApiScopes(Config.ApiScopes)
                 .AddInMemoryClients(Config.Clients)
-                .AddTestUsers(TestUsers.Users);
+                .AddExtensionGrantValidator<ArbitraryResourceOwnerGrantValidator>();
 
             builder.AddDeveloperSigningCredential();
-
-            services.AddAuthentication()
-
-                .AddOpenIdConnect("oidc", "Demo IdentityServer", options =>
-                {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                    options.SignOutScheme = IdentityServerConstants.SignoutScheme;
-                    options.SaveTokens = true;
-
-                    options.Authority = "https://demo.identityserver.io/";
-                    options.ClientId = "interactive.public";
-                    options.ClientSecret = "secret";
-                    options.ResponseType = "code";
-
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        NameClaimType = "name",
-                        RoleClaimType = "role"
-                    };
-                });
 
 
             //////////////////////////////////////////////
@@ -68,6 +53,8 @@ namespace IdentityServer
             // note: This isn't needed for the refesh_token grace stuff
             //       This is to allow a refresh_token to be redeemed without a client_secret
             services.ReplaceClientSecretValidator<MyClientSecretValidator>();
+
+ 
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
