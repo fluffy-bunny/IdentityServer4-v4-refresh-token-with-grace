@@ -150,6 +150,7 @@
     <ProjectReference Include="..\MyValidators\MyValidators.csproj" />
     <ProjectReference Include="..\PersistantStorage\PersistantStorage.csproj" />
     <ProjectReference Include="..\ScopedServices\ScopedServices.csproj" />
+    <ProjectReference Include="..\TenantServices\TenantServices.csproj" />
   </ItemGroup>
 
 </Project>

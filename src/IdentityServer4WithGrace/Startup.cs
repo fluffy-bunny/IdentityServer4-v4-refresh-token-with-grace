@@ -3,6 +3,7 @@
 
 
 using IdentityServer4;
+using IdentityServer4.Hosting;
 using IdentityServer4.Services;
 using IdentityServer4.Services.Extensions;
 using IdentityServer4.Validation;
@@ -59,7 +60,15 @@ namespace IdentityServer
             services.ReplaceClientSecretValidator<MyClientSecretValidator>();
 
             // BASICALLY to make sure your stuff is the one being used, add it last.
- 
+
+            ///////////////////////////////////////////////////////////////////////////////
+            // TenantServices
+            ///////////////////////////////////////////////////////////////////////////////
+            // if you add this it locks you into an url that is {identityServerBase}/{tenantId}/{endpoints} vs
+            // {identityServerBase}/{endpoints}
+            // I utilize ITenantData a SCOPED object that you can inject anywhere in the pipeline to tell you what tenant we have.
+            ///////////////////////////////////////////////////////////////////////////////
+            //services.AddTenantServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
