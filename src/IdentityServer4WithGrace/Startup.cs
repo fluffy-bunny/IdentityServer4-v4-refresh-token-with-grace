@@ -48,12 +48,17 @@ namespace IdentityServer
             //////////////////////////////////////////////
             // IdentityServer sometimes doesn't do a TryAddTransient
             // so we have to replace the services with a remove then add.
+            // I like a concept of only one service in a system that only is designed for that one service.
+            // IServiceCollection lets you add multiple times and the way you get all of them is to ask for
+            // IEnumerable<IClientSecretValidator>.  If you just want one, you ask for IClientSecretValidator and you get 
+            // the last one added.  Hence, I like replace == remove + add.
             //////////////////////////////////////////////
             // replace IdentityServer's IClientSecretValidator with mine.
             // note: This isn't needed for the refesh_token grace stuff
             //       This is to allow a refresh_token to be redeemed without a client_secret
             services.ReplaceClientSecretValidator<MyClientSecretValidator>();
 
+            // BASICALLY to make sure your stuff is the one being used, add it last.
  
         }
 
