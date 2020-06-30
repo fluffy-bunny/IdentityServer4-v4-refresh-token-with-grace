@@ -54,5 +54,28 @@ namespace ClientStore.Models
             set { _requireRefreshClientSecret = value; }
         }
 
+        // https://tools.ietf.org/html/draft-ietf-oauth-access-token-jwt-07
+        // Once this is finalized this will be hard coded to REQUIRED/true.
+        /// <summary>
+        /// Include the client_id in the final access_token
+        /// </summary>
+        private bool? _includeClientId;
+        public bool IncludeClientId
+        {
+            get
+            {
+                return _includeClientId == null ? true : (bool)_includeClientId;
+            }
+            set { _includeClientId = value; }
+        }
+        private bool? _includeAmr;
+        public bool IncludeAmr
+        {
+            get
+            {
+                return _includeAmr == null ? true : (bool)_includeAmr;
+            }
+            set { _includeAmr = value; }
+        }
     }
 }

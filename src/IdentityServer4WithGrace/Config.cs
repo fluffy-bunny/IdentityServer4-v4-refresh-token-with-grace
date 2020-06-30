@@ -57,7 +57,9 @@ namespace IdentityServer
                     RefreshTokenGraceMaxAttempts = 10,
                     RefreshTokenGraceTTL = 300,
 
-                    RequireRefreshClientSecret = false
+                    RequireRefreshClientSecret = false,
+                    IncludeClientId = false,
+                    IncludeAmr = false
                 }
             };
     }
