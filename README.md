@@ -172,7 +172,23 @@ In this case IdentityServer **DOES NOT** honor adding my IClientSecretValidator 
 [MyClientSecretValidator](./src/MyValidators/MyClientSecretValidator.cs)    
 
 
+# grant_type=arbitrary_resource_owner
+This is an extension grant that lets you mint an access_token with anything you want in it.  
 
+
+```
+curl --location --request POST 'https://localhost:5001/connect/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--header 'Authorization: Basic cm9jbGllbnQ6c2VjcmV0' \
+--data-urlencode 'grant_type=arbitrary_resource_owner' \
+--data-urlencode 'scope=passage geo torrent stats discovery offline_access' \
+--data-urlencode 'arbitrary_claims={"top":["TopDog"],"role": ["admin","limited"],"query": ["dashboard", "licensing"],"seatId": ["8c59ec41-54f3-460b-a04e-520fc5b9973d"],"piid": ["2368d213-d06c-4c2a-a099-11c34adc3579"]}' \
+--data-urlencode 'subject=66C8C5A139F65007808EF00716203B09B5C157C3' \
+--data-urlencode 'access_token_lifetime=3600' \
+--data-urlencode 'arbitrary_amrs=["agent:username:agent0@supporttech.com","agent:challenge:fullSSN","agent:challenge:homeZip"]' \
+--data-urlencode 'arbitrary_audiences=["SE_GLOBAL_JWT"]' \
+--data-urlencode 'custom_payload={"some_string": "data","some_number": 1234,"some_object": {"some_string": "data","some_number": 1234},"some_array": [{"a": "b"},{"b": "c"}]}'
+```
 
 
 
