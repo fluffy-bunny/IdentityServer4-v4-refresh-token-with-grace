@@ -68,7 +68,7 @@ namespace IdentityServer
             // {identityServerBase}/{endpoints}
             // I utilize ITenantData a SCOPED object that you can inject anywhere in the pipeline to tell you what tenant we have.
             ///////////////////////////////////////////////////////////////////////////////
-            //services.AddTenantServices();
+            services.AddTenantServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -80,6 +80,9 @@ namespace IdentityServer
 
             app.UseStaticFiles();
             app.UseRouting();
+
+            // peels of the tenantId /{tenantId}/*
+            app.UseTenantServices();
 
             app.UseIdentityServer();
             app.UseAuthorization();
